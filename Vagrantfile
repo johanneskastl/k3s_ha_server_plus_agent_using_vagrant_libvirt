@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
   ###############################################
 
   # define number of servers
-  M = 1
+  M = 3
 
   # provision N VMs as servers
   (1..M).each do |i|
@@ -61,7 +61,7 @@ Vagrant.configure("2") do |config|
           ansible.compatibility_mode = "2.0"
           ansible.limit = "all"
           ansible.groups = {
-            "k3sservers"  => [ "k3sserver1" ],
+            "k3sservers"  => [ "k3sserver1", "k3sserver2", "k3sserver3" ],
             "k3sagents"  => [ "k3sagent1" ]
           }
           ansible.playbook = "ansible/playbook-vagrant.yml"
