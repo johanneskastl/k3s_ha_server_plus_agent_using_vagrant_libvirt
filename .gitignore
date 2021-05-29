@@ -1,0 +1,11 @@
+#
+# Ignore vagrant-related files
+#
+.vagrant
+Vagrantfile.1
+
+# ignore kubeconfig fetched from the machine
+ansible/k3s-kubeconfig
+
+# ignore token file fetched from the machine
+ansible/k3s-token
