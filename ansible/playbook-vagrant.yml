@@ -1,0 +1,41 @@
+---
+- name: 'Install, configure and start k3s on the first k3s server'
+  hosts: 'k3sservers[0]'
+  gather_facts: 'yes'
+  become: 'true'
+
+  roles:
+    - role: 'install_k3s'
+      vars:
+        fetch_token: 'true'
+        cluster_init: 'true'
+
+- name: 'Install, configure and start k3s on the agents'
+  hosts: 'k3sagents'
+  gather_facts: 'yes'
+  become: 'true'
+
+  pre_tasks:
+
+    - name: 'Create /etc/rancher/k3s directory'
+      file:
+        path: '/etc/rancher/k3s'
+        state: 'directory'
+        owner: 'root'
+        group: 'root'
+        mode: '0755'
+
+    - name: 'Copy token file to /etc/rancher/k3s/token_to_register'
+      copy:
+        src: 'k3s-token'
+        dest: '/etc/rancher/k3s/token_to_register'
+        owner: 'root'
+        group: 'root'
+        mode: '0600'
+
+  roles:
+    - role: 'install_k3s'
+      vars:
+        k3s_node_type: 'agent'
+        server_url: "https://{{ hostvars[groups['k3sservers'][0]]['ansible_default_ipv4']['address'] }}:6443"
+        token_file: '/etc/rancher/k3s/token_to_register'
